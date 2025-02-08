@@ -1,21 +1,11 @@
 # 이 파일은 주식코드와 기간을 받으면 Drawdown을 그려주는 프로그램 입니다
 
-import subprocess
-import sys
-
-try:
-    import yfinance as yf
-    print("yfinance is already installed.")
-except ImportError:
-    print("yfinance not found. Installing...")
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "yfinance"])
-
 
 # 패키지 불러오기
 import pandas as pd
 import numpy as np
 # import yahoo_fin.stock_info as si
-# import yfinance as yf
+import yfinance as yf
 import math
 import datetime
 import streamlit as st
