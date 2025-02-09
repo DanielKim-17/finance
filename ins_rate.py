@@ -106,7 +106,7 @@ if st.button('Get Data'):
         drawdown = drawdown_df(stock_df)
         
         # 주식 그래프 그리기
-        st.subheader('Stock Prices')
+        st.subheader('Funds Yields')
         st.line_chart(stock_df)
 
         # # drawdown 계산
