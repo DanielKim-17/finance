@@ -1,1 +1,3 @@
 yfinance
+real_risk_kit
+yahoo_fin
