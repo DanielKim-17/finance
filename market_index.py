@@ -5,7 +5,6 @@
 
 import pandas as pd
 import numpy as np
-import yahoo_fin.stock_info as si
 import yfinance as yf
 import datetime
 import streamlit as st
