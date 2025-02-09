@@ -4,11 +4,9 @@
 '''
 
 import pandas as pd
-import numpy as np
 import yfinance as yf
 import datetime
 import streamlit as st
-import real_risk_kit as rrk
 
 stock_indicators = {
     'SP500': {'ticker': '^GSPC', 'currency': 'USD'},
@@ -58,6 +56,14 @@ def convert_currency(df, currency, start_date, end_date):
         st.warning(f"Could not retrieve FX rate for {currency}: {e}")
         return df
 
+def drawdown_df (df) :
+    rets = df.pct_change()
+    rets = rets[1:]
+    rets = 1+rets
+    wealth_index = 1000*(rets).cumprod()
+    previous_peak = wealth_index.cummax()
+    drawdown = (wealth_index - previous_peak) / previous_peak
+    return drawdown
 
 # 주식 데이터를 가져오기 및 그래프 그리기
 if st.button('Get Data'):
@@ -105,7 +111,7 @@ if st.button('Get Data'):
     if not usd_converted_df.empty:
 
         # drawdown 계산
-        drawdown = rrk.drawdown_df(usd_converted_df)
+        drawdown = drawdown_df(usd_converted_df)
         
         # 주식 그래프 그리기
         st.subheader('Stock Prices')
