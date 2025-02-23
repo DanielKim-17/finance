@@ -8,6 +8,7 @@ import yfinance as yf
 import datetime
 import streamlit as st
 
+
 stock_indicators = {
     'SP500': {'ticker': '^GSPC', 'currency': 'USD'},
     'NASDAQ': {'ticker': '^IXIC', 'currency': 'USD'},
@@ -108,14 +109,39 @@ if st.button('Get Data'):
     usd_converted_df_normalized = (usd_converted_df / usd_converted_df.iloc[0] * 100).round(2)
 
 
+    # drawdown 계산
+    drawdown = drawdown_df(usd_converted_df)
+    
+    # 각 컬럼의 가장 낮은 값과 날짜 출력
+    min_drawdown = drawdown.min().round(2) * 100
+    min_drawdown_dates = drawdown.idxmin()
+    latest_date = drawdown.index[-1]
+    latest_drawdown = drawdown.loc[latest_date].round(2)*100
+    # 각 컬럼의 가장 낮은 값과 날짜 출력
+    min_drawdown_data = {
+        'Market': [],
+        'Min': [],
+        'Min Date': [],
+        'Latest': [],
+        'Latest Date': []
+    }
+    for col in drawdown.columns:
+        min_drawdown_data['Market'].append(col)
+        min_drawdown_data['Min'].append(min_drawdown[col])
+        min_drawdown_data['Min Date'].append(min_drawdown_dates[col].date())
+        min_drawdown_data['Latest'].append(latest_drawdown[col])
+        min_drawdown_data['Latest Date'].append(latest_date.date())
+    
+    min_drawdown_df = pd.DataFrame(min_drawdown_data)
+
+
     if not usd_converted_df.empty:
 
-        # drawdown 계산
-        drawdown = drawdown_df(usd_converted_df)
         
         # 주식 그래프 그리기
         st.subheader('Stock Prices')
         st.line_chart(stock_df_normalized)
+
 
         # USD 주식 그래프 그리기
         st.subheader('USD Covert Stock Prices')
@@ -124,8 +150,16 @@ if st.button('Get Data'):
         # USD drawdown 그래프 그리기
         st.subheader('Drawdown')
         st.line_chart(drawdown)
+
+        # 데이터 프레임그리기
+        st.subheader('Minimum Drawdown by Market')
+        st.table(min_drawdown_df)
+
     else:
         st.warning("No valid stock data to display.")
 
 # 실행 방법 streamlit run app.py
 
+# Set-ExecutionPolicy Unrestricted -Scope Process
+# .\.venv\Scripts\activate
+# streamlit run market_index_v1.py
