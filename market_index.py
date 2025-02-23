@@ -67,32 +67,32 @@ def drawdown_df (df) :
     return drawdown
 
 # 주식 데이터를 가져오기 및 그래프 그리기
+# 데이터 주기를 선택
+period = st.selectbox('Select Data Period', ['1d', '1wk', '1mo'])
+
 if st.button('Get Data'):
     stock_df = pd.DataFrame()
     country_codes = {code: stock_indicators[code] for code in select_codes}
     for country, info in country_codes.items():
         code = info['ticker']
         try:
-            stock_df [country] = yf.download(code, start=start_date, end=end_date)['Close']
+            stock_df[country] = yf.download(code, start=start_date, end=end_date, interval=period)['Close']
         except Exception as e:
             st.warning(f"Could not retrieve data for {code}: {e}")
     stock_df.fillna(method='ffill', inplace=True)  # 먼저 위의 유효한 값으로 채움
     stock_df.fillna(method='bfill', inplace=True)  # 그 다음 아래의 유효한 값으로 채움
     stock_df_normalized = (stock_df / stock_df.iloc[0] * 100).round(2)
 
-    
     currency_df = pd.DataFrame()
     for code in currency_codes:
         if code:  # 주식코드가 입력된 경우에만 처리
             if code != 'USD':                
                 try:
-                    currency_df[code] = yf.download(f'{code}=X', start=start_date, end=end_date)['Close']
+                    currency_df[code] = yf.download(f'{code}=X', start=start_date, end=end_date, interval=period)['Close']
                 except Exception as e:
                     st.warning(f"Could not retrieve data for {code}: {e}")
     currency_df.fillna(method='ffill', inplace=True)  # 먼저 위의 유효한 값으로 채움
     currency_df.fillna(method='bfill', inplace=True)  # 그 다음 아래의 유효한 값으로 채움
-
-
 
     # 각 국가의 지표 데이터를 USD로 환산
     usd_converted_df = pd.DataFrame()
@@ -108,7 +108,6 @@ if st.button('Get Data'):
             usd_converted_df[country] = (stock_df[country] / currency_df[currency])
     usd_converted_df_normalized = (usd_converted_df / usd_converted_df.iloc[0] * 100).round(2)
 
-
     # drawdown 계산
     drawdown = drawdown_df(usd_converted_df)
     
@@ -116,7 +115,7 @@ if st.button('Get Data'):
     min_drawdown = drawdown.min().round(2) * 100
     min_drawdown_dates = drawdown.idxmin()
     latest_date = drawdown.index[-1]
-    latest_drawdown = drawdown.loc[latest_date].round(2)*100
+    latest_drawdown = drawdown.loc[latest_date].round(2) * 100
     # 각 컬럼의 가장 낮은 값과 날짜 출력
     min_drawdown_data = {
         'Market': [],
@@ -134,14 +133,10 @@ if st.button('Get Data'):
     
     min_drawdown_df = pd.DataFrame(min_drawdown_data)
 
-
     if not usd_converted_df.empty:
-
-        
         # 주식 그래프 그리기
         st.subheader('Stock Prices')
         st.line_chart(stock_df_normalized)
-
 
         # USD 주식 그래프 그리기
         st.subheader('USD Covert Stock Prices')
@@ -151,15 +146,15 @@ if st.button('Get Data'):
         st.subheader('Drawdown')
         st.line_chart(drawdown)
 
-        # 데이터 프레임그리기
+        # 데이터 프레임 그리기
         st.subheader('Minimum Drawdown by Market')
         st.table(min_drawdown_df)
-
     else:
         st.warning("No valid stock data to display.")
 
 # 실행 방법 streamlit run app.py
 
 # Set-ExecutionPolicy Unrestricted -Scope Process
-# .\.venv\Scripts\activate
+# 
+# Scripts\activate
 # streamlit run market_index_v1.py
