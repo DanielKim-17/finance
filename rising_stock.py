@@ -7,7 +7,92 @@ import datetime
 
 st.set_page_config(page_title=None, page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)
 
+sp500_tickers = ['AAPL', 'NVDA', 'MSFT', 'AMZN', 'GOOGL', 'GOOG', 'META', 'AVGO',
+    'TSLA', 'LLY', 'WMT', 'JPM', 'V', 'MA', 'XOM', 'ORCL', 'COST',
+    'UNH', 'NFLX', 'PG', 'JNJ', 'HD', 'ABBV', 'BAC', 'KO', 'TMUS',
+    'CRM', 'CVX', 'CSCO', 'WFC', 'PM', 'ABT', 'IBM', 'MRK', 'ACN',
+    'MCD', 'LIN', 'GE', 'PEP', 'MS', 'AXP', 'DIS', 'ISRG', 'PLTR',
+    'TMO', 'T', 'BX', 'ADBE', 'NOW', 'GS', 'VZ', 'TXN', 'RTX', 'QCOM',
+    'INTU', 'AMGN', 'PGR', 'CAT', 'SPGI', 'BKNG', 'AMD', 'UBER', 'BSX',
+    'C', 'SYK', 'UNP', 'PFE', 'DHR', 'BLK', 'NEE', 'SCHW', 'GILD',
+    'TJX', 'HON', 'LOW', 'CMCSA', 'BA', 'DE', 'SBUX', 'FI', 'AMAT',
+    'ADP', 'PANW', 'COP', 'KKR', 'VRTX', 'BMY', 'NKE', 'MDT', 'ANET',
+    'MMC', 'ETN', 'PLD', 'CB', 'ADI', 'LMT', 'MU', 'UPS', 'INTC',
+    'ICE', 'LRCX', 'WELL', 'SO', 'AMT', 'CRWD', 'MO', 'KLAC', 'WM',
+    'CME', 'GEV', 'DUK', 'SHW', 'ELV', 'MCO', 'EQIX', 'AON', 'ABNB',
+    'AJG', 'PH', 'APO', 'CI', 'MDLZ', 'FTNT', 'CTAS', 'MMM', 'CVS',
+    'HCA', 'APH', 'CEG', 'MCK', 'ORLY', 'TT', 'REGN', 'ITW', 'MAR',
+    'TDG', 'ECL', 'DELL', 'COF', 'PNC', 'ZTS', 'EOG', 'CL', 'RSG',
+    'USB', 'MSI', 'CMG', 'SNPS', 'PYPL', 'APD', 'WDAY', 'SPG', 'WMB',
+    'CDNS', 'GD', 'EMR', 'NOC', 'BDX', 'RCL', 'HLT', 'FDX', 'BK',
+    'CSX', 'ROP', 'ADSK', 'OKE', 'TFC', 'AFL', 'KMI', 'AZO', 'TRV',
+    'MET', 'AEP', 'TGT', 'SLB', 'JCI', 'PCAR', 'CARR', 'NXPI', 'NSC',
+    'HWM', 'DLR', 'FCX', 'PSA', 'PAYX', 'CPRT', 'AMP', 'PSX', 'ALL',
+    'CHTR', 'MNST', 'O', 'CMI', 'GWW', 'COR', 'D', 'DFS', 'NEM', 'GM',
+    'AIG', 'SRE', 'KMB', 'NDAQ', 'MPC', 'KR', 'OXY', 'KDP', 'ROST',
+    'TEL', 'HES', 'MSCI', 'FANG', 'FICO', 'VST', 'KVUE', 'LULU', 'EXC',
+    'AME', 'BKR', 'CTVA', 'GRMN', 'YUM', 'TRGP', 'FAST', 'EW', 'GLW',
+    'CBRE', 'CTSH', 'URI', 'GEHC', 'VLO', 'VRSK', 'XEL', 'DHI', 'CCI',
+    'PEG', 'AXON', 'PRU', 'OTIS', 'DAL', 'LHX', 'PWR', 'IT', 'ODFL',
+    'F', 'TTWO', 'ETR', 'FIS', 'KHC', 'SYY', 'A', 'IDXX', 'HSY', 'PCG',
+    'ACGL', 'ED', 'DXCM', 'VICI', 'RMD', 'EA', 'DD', 'EXR', 'WEC',
+    'IR', 'HIG', 'WTW', 'BRO', 'GIS', 'IQV', 'LYV', 'VMC', 'ROK',
+    'LEN', 'CCL', 'AVB', 'HUM', 'STZ', 'XYL', 'LVS', 'TPL', 'HPQ',
+    'RJF', 'MTB', 'NUE', 'WAB', 'CAH', 'MCHP', 'CSGP', 'EBAY', 'UAL',
+    'EFX', 'VTR', 'IP', 'MLM', 'TSCO', 'MPWR', 'ANSS', 'CNC', 'EQR',
+    'FITB', 'K', 'STT', 'EQT', 'BR', 'KEYS', 'DTE', 'FTV', 'DOV',
+    'WBD', 'DOW', 'SW', 'CHD', 'IRM', 'AEE', 'EL', 'MTD', 'HPE', 'AWK',
+    'TYL', 'PPG', 'GPN', 'SMCI', 'CPAY', 'PPL', 'ROL', 'EXPE', 'FOX',
+    'FOXA', 'GDDY', 'LYB', 'VLTO', 'NTAP', 'ATO', 'CDW', 'WRB', 'HBAN',
+    'SBAC', 'TDY', 'DVN', 'TROW', 'SYF', 'ES', 'DRI', 'HAL', 'CINF',
+    'ADM', 'WAT', 'FE', 'VRSN', 'CNP', 'MKC', 'WY', 'CBOE', 'TSN',
+    'STE', 'CMS', 'LII', 'NTRS', 'STX', 'RF', 'ERIE', 'DECK', 'ESS',
+    'NRG', 'PHM', 'IFF', 'LH', 'NVR', 'ZBH', 'BIIB', 'INVH', 'STLD',
+    'CTRA', 'ON', 'MAA', 'EIX', 'HUBB', 'CFG', 'PFG', 'PTC', 'DGX',
+    'CLX', 'PKG', 'BBY', 'KEY', 'PODD', 'NI', 'LUV', 'L', 'COO', 'BAX',
+    'SNA', 'TER', 'ARE', 'TPR', 'TRMB', 'FDS', 'GPC', 'LDOS', 'ULTA',
+    'JBL', 'GEN', 'FFIV', 'WDC', 'RL', 'UDR', 'NWS', 'NWSA', 'DPZ',
+    'LNT', 'MOH', 'DG', 'EXPD', 'OMC', 'WST', 'ZBRA', 'JBHT', 'BLDR',
+    'MAS', 'EVRG', 'DLTR', 'HRL', 'J', 'PNR', 'FSLR', 'APTV', 'EG',
+    'BALL', 'IEX', 'KIM', 'AVY', 'AMCR', 'SOLV', 'INCY', 'HOLX', 'DOC',
+    'REG', 'ALGN', 'CF', 'TXT', 'RVTY', 'CPT', 'SWK', 'POOL', 'KMX',
+    'TAP', 'JKHY', 'BXP', 'CAG', 'PAYC', 'UHS', 'JNPR', 'MRNA', 'NDSN',
+    'CPB', 'CHRW', 'EPAM', 'DVA', 'AKAM', 'SJM', 'VTRS', 'HST', 'EMN',
+    'ALLE', 'LKQ', 'PNW', 'AIZ', 'BEN', 'GL', 'NCLH', 'SWKS', 'IPG',
+    'MGM', 'DAY', 'BG', 'WBA', 'TECH', 'AOS', 'WYNN', 'ALB', 'HAS',
+    'FRT', 'HSIC', 'CRL', 'ENPH', 'GNRC', 'MTCH', 'MOS', 'PARA', 'IVZ',
+    'APA', 'AES', 'MHK', 'LW', 'MKTX', 'CZR', 'HII', 'BWA', 'TFX',
+    'CE', 'FMC']
+
+drop_stock = ['HRL', 'PFE', 'HAL', 'NKE', 'ON', 'CZR', 'EPAM', 'DVN', 'SWKS', 'ADM',
+       'MTCH', 'TFX', 'APTV', 'MKTX', 'MOS', 'LW', 'HUM', 'PARA', 'APA',
+       'DLTR', 'BIIB', 'CE', 'AES', 'WBA', 'DG', 'FMC', 'ALB', 'ENPH', 'EL',
+       'MRNA']
+
+sector = ['AAPL', 'NVDA', 'MSFT', 'AMZN', 'GOOGL', 'GOOG', 'META', 'AVGO',
+       'TSLA', 'LLY', 'WMT', 'JPM', 'V', 'MA', 'XOM', 'ORCL', 'COST',
+       'UNH', 'NFLX', 'PG', 'JNJ', 'HD', 'ABBV', 'BAC', 'KO', 'TMUS',
+       'CVX', 'WFC', 'PM', 'ABT', 'MCD', 'LIN', 'GE', 'RTX', 'CAT',
+       'BKNG', 'UNP', 'NEE', 'HON', 'COP', 'PLD', 'WELL', 'SO', 'AMT',
+       'DUK', 'SHW', 'EQIX', 'CEG', 'ECL', 'EOG', 'APD', 'SPG', 'WMB',
+       'AEP', 'FCX']
+
+selected = ['9988.HK','0700.HK','005930.KS','TSMC34.SA']
+
+
 with st.sidebar:
+    ticker_source = st.selectbox('Select Ticker Source', options=['sp500_tickers', 'drop_stock', 'sector', 'selected'])
+    if ticker_source == 'sp500_tickers':
+        ticker_source = sp500_tickers
+    elif ticker_source == 'drop_stock':
+        ticker_source = drop_stock
+    elif ticker_source == 'sector':
+        ticker_source = sector
+    elif ticker_source == 'selected':
+        ticker_source = selected
+
+    low = st.number_input('low', value= 0)
+    high = st.number_input('high', value= 10)
     periods = st.selectbox('Select Data Period', ['1mo', '2mo', '3mo'])
     Button_SP = st.button('Get SP500 Data')
     Raisings = st.selectbox('Select Rasing Falling', ['Rasing', 'Falling'])
@@ -25,36 +110,11 @@ if Button_SP:
     # url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
     # tables = pd.read_html(url)
     # sp500_tickers = tables[0]['Symbol'].tolist()
-    sp500_tickers = ['MMM', 'AOS', 'ABT', 'ABBV', 'ACN', 'ADBE', 'AMD', 'AES', 'AFL', 'A', 'APD', 'ABNB', 'AKAM', 'ALB', 'ARE', 'ALGN', 'ALLE', 'LNT', 'ALL', 'GOOGL', 
-                     'GOOG', 'MO', 'AMZN', 'AMCR', 'AEE', 'AEP', 'AXP', 'AIG', 'AMT', 'AWK', 'AMP', 'AME', 'AMGN', 'APH', 'ADI', 'ANSS', 'AON', 'APA', 'APO', 'AAPL', 
-                     'AMAT', 'APTV', 'ACGL', 'ADM', 'ANET', 'AJG', 'AIZ', 'T', 'ATO', 'ADSK', 'ADP', 'AZO', 'AVB', 'AVY', 'AXON', 'BKR', 'BALL', 'BAC', 'BAX', 'BDX', 
-                     'BBY', 'TECH', 'BIIB', 'BLK', 'BX', 'BK', 'BA', 'BKNG', 'BWA', 'BSX', 'BMY', 'AVGO', 'BR', 'BRO', 'BLDR', 'BG', 'BXP', 'CHRW', 'CDNS', 'CZR', 'CPT',
-                     'CPB', 'COF', 'CAH', 'KMX', 'CCL', 'CARR', 'CAT', 'CBOE', 'CBRE', 'CDW', 'CE', 'COR', 'CNC', 'CNP', 'CF', 'CRL', 'SCHW', 'CHTR', 'CVX', 'CMG', 'CB', 
-                     'CHD', 'CI', 'CINF', 'CTAS', 'CSCO', 'C', 'CFG', 'CLX', 'CME', 'CMS', 'KO', 'CTSH', 'CL', 'CMCSA', 'CAG', 'COP', 'ED', 'STZ', 'CEG', 'COO', 'CPRT', 
-                     'GLW', 'CPAY', 'CTVA', 'CSGP', 'COST', 'CTRA', 'CRWD', 'CCI', 'CSX', 'CMI', 'CVS', 'DHR', 'DRI', 'DVA', 'DAY', 'DECK', 'DE', 'DELL', 'DAL', 'DVN', 
-                     'DXCM', 'FANG', 'DLR', 'DFS', 'DG', 'DLTR', 'D', 'DPZ', 'DOV', 'DOW', 'DHI', 'DTE', 'DUK', 'DD', 'EMN', 'ETN', 'EBAY', 'ECL', 'EIX', 'EW', 'EA', 
-                     'ELV', 'EMR', 'ENPH', 'ETR', 'EOG', 'EPAM', 'EQT', 'EFX', 'EQIX', 'EQR', 'ERIE', 'ESS', 'EL', 'EG', 'EVRG', 'ES', 'EXC', 'EXPE', 'EXPD', 'EXR', 
-                     'XOM', 'FFIV', 'FDS', 'FICO', 'FAST', 'FRT', 'FDX', 'FIS', 'FITB', 'FSLR', 'FE', 'FI', 'FMC', 'F', 'FTNT', 'FTV', 'FOXA', 'FOX', 'BEN', 'FCX', 
-                     'GRMN', 'IT', 'GE', 'GEHC', 'GEV', 'GEN', 'GNRC', 'GD', 'GIS', 'GM', 'GPC', 'GILD', 'GPN', 'GL', 'GDDY', 'GS', 'HAL', 'HIG', 'HAS', 'HCA', 'DOC', 
-                     'HSIC', 'HSY', 'HES', 'HPE', 'HLT', 'HOLX', 'HD', 'HON', 'HRL', 'HST', 'HWM', 'HPQ', 'HUBB', 'HUM', 'HBAN', 'HII', 'IBM', 'IEX', 'IDXX', 'ITW', 
-                     'INCY', 'IR', 'PODD', 'INTC', 'ICE', 'IFF', 'IP', 'IPG', 'INTU', 'ISRG', 'IVZ', 'INVH', 'IQV', 'IRM', 'JBHT', 'JBL', 'JKHY', 'J', 'JNJ', 'JCI', 
-                     'JPM', 'JNPR', 'K', 'KVUE', 'KDP', 'KEY', 'KEYS', 'KMB', 'KIM', 'KMI', 'KKR', 'KLAC', 'KHC', 'KR', 'LHX', 'LH', 'LRCX', 'LW', 'LVS', 'LDOS', 'LEN', 
-                     'LII', 'LLY', 'LIN', 'LYV', 'LKQ', 'LMT', 'L', 'LOW', 'LULU', 'LYB', 'MTB', 'MPC', 'MKTX', 'MAR', 'MMC', 'MLM', 'MAS', 'MA', 'MTCH', 'MKC', 'MCD', 
-                     'MCK', 'MDT', 'MRK', 'META', 'MET', 'MTD', 'MGM', 'MCHP', 'MU', 'MSFT', 'MAA', 'MRNA', 'MHK', 'MOH', 'TAP', 'MDLZ', 'MPWR', 'MNST', 'MCO', 'MS', 
-                     'MOS', 'MSI', 'MSCI', 'NDAQ', 'NTAP', 'NFLX', 'NEM', 'NWSA', 'NWS', 'NEE', 'NKE', 'NI', 'NDSN', 'NSC', 'NTRS', 'NOC', 'NCLH', 'NRG', 'NUE', 'NVDA', 
-                     'NVR', 'NXPI', 'ORLY', 'OXY', 'ODFL', 'OMC', 'ON', 'OKE', 'ORCL', 'OTIS', 'PCAR', 'PKG', 'PLTR', 'PANW', 'PARA', 'PH', 'PAYX', 'PAYC', 'PYPL', 'PNR', 
-                     'PEP', 'PFE', 'PCG', 'PM', 'PSX', 'PNW', 'PNC', 'POOL', 'PPG', 'PPL', 'PFG', 'PG', 'PGR', 'PLD', 'PRU', 'PEG', 'PTC', 'PSA', 'PHM', 'PWR', 'QCOM', 
-                     'DGX', 'RL', 'RJF', 'RTX', 'O', 'REG', 'REGN', 'RF', 'RSG', 'RMD', 'RVTY', 'ROK', 'ROL', 'ROP', 'ROST', 'RCL', 'SPGI', 'CRM', 'SBAC', 'SLB', 'STX', 
-                     'SRE', 'NOW', 'SHW', 'SPG', 'SWKS', 'SJM', 'SW', 'SNA', 'SOLV', 'SO', 'LUV', 'SWK', 'SBUX', 'STT', 'STLD', 'STE', 'SYK', 'SMCI', 'SYF', 'SNPS', 'SYY', 
-                     'TMUS', 'TROW', 'TTWO', 'TPR', 'TRGP', 'TGT', 'TEL', 'TDY', 'TFX', 'TER', 'TSLA', 'TXN', 'TPL', 'TXT', 'TMO', 'TJX', 'TSCO', 'TT', 'TDG', 'TRV', 'TRMB',
-                      'TFC', 'TYL', 'TSN', 'USB', 'UBER', 'UDR', 'ULTA', 'UNP', 'UAL', 'UPS', 'URI', 'UNH', 'UHS', 'VLO', 'VTR', 'VLTO', 'VRSN', 'VRSK', 'VZ', 'VRTX', 
-                      'VTRS', 'VICI', 'V', 'VST', 'VMC', 'WRB', 'GWW', 'WAB', 'WBA', 'WMT', 'DIS', 'WBD', 'WM', 'WAT', 'WEC', 'WFC', 'WELL', 'WST', 'WDC', 'WY', 'WMB', 
-                      'WTW', 'WDAY', 'WYNN', 'XEL', 'XYL', 'YUM', 'ZBRA', 'ZBH', 'ZTS']
 
     data = pd.DataFrame()
 
     # Download historical data for the S&P 500 tickers
-    data = yf.download(sp500_tickers, period=periods)
+    data = yf.download(ticker_source[low:high], period=periods)
 
     # Calculate the percentage change from the first day to the last day
     change = (data['Close'].iloc[-1] / data['Close'].iloc[0] - 1) * 100
@@ -171,7 +231,7 @@ if Button_AZ:
             # company_infos 테이블 출력
             st.subheader('Minimum Drawdown by Market')
             # st.data_editor(final_table)
-            st.dataframe(final_table)
+            st.dataframe(final_table, hide_index = True)
 
             # 주식 그래프 그리기
             st.subheader('Stock Prices')
