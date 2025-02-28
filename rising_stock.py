@@ -171,13 +171,11 @@ if Button_AZ:
             # company_infos 테이블 출력
             st.subheader('Minimum Drawdown by Market')
             # st.data_editor(final_table)
-
             st.dataframe(final_table)
 
             # 주식 그래프 그리기
             st.subheader('Stock Prices')
             st.line_chart(combined_df)
-            st.dataframe(combined_df_price)
 
             # drawdown 그래프 그리기
             st.subheader('Drawdown')
