@@ -39,9 +39,10 @@ with st.sidebar:
 
     start_date = st.date_input('Start Date', datetime.date(2020, 1, 1))
     end_date = st.date_input('End Date', datetime.date.today())
+    Button_AZ = st.button('Get Data')
 
 # 주식 데이터를 가져오기 및 그래프 그리기
-if st.button('Get Data'):
+if Button_AZ:
     combined_df = pd.DataFrame()
     for code in stock_codes:
         if code:  # 주식코드가 입력된 경우에만 처리
@@ -49,18 +50,48 @@ if st.button('Get Data'):
                 combined_df[code] = yf.download(code, start=start_date, end=end_date)['Close']
             except Exception as e:
                 st.warning(f"Could not retrieve data for {code}: {e}")
+    combined_df_normalized = (combined_df / combined_df.iloc[0] * 100).round(2)
+
+
     
     if not combined_df.empty:
         # drawdown 계산
         drawdown = drawdown_df(combined_df)
+
+
+        min_drawdown = drawdown.min().round(2) * 100
+        min_drawdown_dates = drawdown.idxmin()
+        latest_date = drawdown.index[-1]
+        latest_drawdown = drawdown.loc[latest_date].round(2) * 100
+
+        min_drawdown_data = {
+        'Market': [],
+        'Min': [],
+        'Min Date': [],
+        'Latest': [],
+        'Latest Date': []
+        }
+        for col in drawdown.columns:
+            min_drawdown_data['Market'].append(col)
+            min_drawdown_data['Min'].append(min_drawdown[col])
+            min_drawdown_data['Min Date'].append(min_drawdown_dates[col].date())
+            min_drawdown_data['Latest'].append(latest_drawdown[col])
+            min_drawdown_data['Latest Date'].append(latest_date.date())
         
         # 주식 그래프 그리기
         st.subheader('Stock Prices')
         st.line_chart(combined_df)
         
+        st.subheader('Stock Prices Normalized')
+        st.line_chart(combined_df_normalized)
+
         # drawdown 그래프 그리기
         st.subheader('Drawdown')
         st.line_chart(drawdown)
+
+        st.subheader('Minimum Drawdown by Market')
+        st.dataframe(min_drawdown_data, hide_index = True)
+        
     else:
         st.warning("No valid stock data to display.")
 
