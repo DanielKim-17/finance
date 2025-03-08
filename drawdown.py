@@ -10,6 +10,8 @@ import math
 import datetime
 import streamlit as st
 
+st.set_page_config(page_title=None, page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)
+
 # drawdown을 계산하는 함수
 def drawdown_df (df) :
     rets = df.pct_change()

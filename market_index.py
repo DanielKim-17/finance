@@ -8,6 +8,7 @@ import yfinance as yf
 import datetime
 import streamlit as st
 
+st.set_page_config(page_title=None, page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)
 
 stock_indicators = {
     'SP500': {'ticker': '^GSPC', 'currency': 'USD'},
