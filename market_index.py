@@ -28,21 +28,23 @@ stock_indicators = {
 
 
 # 여러 코드를 선택 받음
-select_codes = st.multiselect(
-    "Which market do you want to analyze?",
-    list(stock_indicators.keys()),
-    list(stock_indicators.keys())[0],
-)
+with st.sidebar:
+    select_codes = st.multiselect(
+        "Which market do you want to analyze?",
+        list(stock_indicators.keys()),
+        list(stock_indicators.keys())[0],
+    )
 
-stock_codes = [stock_indicators[i]['ticker'] for i in select_codes]
-currency_codes = [stock_indicators[i]['currency'] for i in select_codes]
+    stock_codes = [stock_indicators[i]['ticker'] for i in select_codes]
+    currency_codes = [stock_indicators[i]['currency'] for i in select_codes]
 
 
 
-# 여러 주식코드를 입력받기
+    # 여러 주식코드를 입력받기
 
-start_date = st.date_input('Start Date', datetime.date(2020, 1, 1))
-end_date = st.date_input('End Date', datetime.date.today())
+    start_date = st.date_input('Start Date', datetime.date(2020, 1, 1))
+    end_date = st.date_input('End Date', datetime.date.today())
+    period = st.selectbox('Select Data Period', ['1d', '1wk', '1mo'])
 
 
 
@@ -69,7 +71,7 @@ def drawdown_df (df) :
 
 # 주식 데이터를 가져오기 및 그래프 그리기
 # 데이터 주기를 선택
-period = st.selectbox('Select Data Period', ['1d', '1wk', '1mo'])
+
 
 if st.button('Get Data'):
     stock_df = pd.DataFrame()

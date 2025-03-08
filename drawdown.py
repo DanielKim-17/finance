@@ -24,20 +24,21 @@ def drawdown_df (df) :
 
 
 # Streamlit을 통해 주식코드와 기간을 입력받기
-st.title('Stock Drawdown Analysis')
-col1, col2, col3 = st.columns(3)
-with col1:
-    stock_code1 = st.text_input('Enter Stock Code', 'AAPL')
-with col2:
-    stock_code2 = st.text_input('Enter Stock Code', 'GOOG')
-with col3:
-    stock_code3 = st.text_input('Enter Stock Code', 'AMZN')
+with st.sidebar:
+    st.title('Stock Drawdown Analysis')
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        stock_code1 = st.text_input('Enter Stock Code', 'AAPL')
+    with col2:
+        stock_code2 = st.text_input('Enter Stock Code', 'GOOG')
+    with col3:
+        stock_code3 = st.text_input('Enter Stock Code', 'AMZN')
 
-# 여러 주식코드를 입력받기
-stock_codes = [stock_code1, stock_code2, stock_code3]
+    # 여러 주식코드를 입력받기
+    stock_codes = [stock_code1, stock_code2, stock_code3]
 
-start_date = st.date_input('Start Date', datetime.date(2020, 1, 1))
-end_date = st.date_input('End Date', datetime.date.today())
+    start_date = st.date_input('Start Date', datetime.date(2020, 1, 1))
+    end_date = st.date_input('End Date', datetime.date.today())
 
 # 주식 데이터를 가져오기 및 그래프 그리기
 if st.button('Get Data'):

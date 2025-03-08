@@ -62,21 +62,22 @@ ins_indicators = {
 
 
 # 여러 코드를 선택 받음
-select_codes = st.multiselect(
-    "Which market do you want to analyze?",
-    list(ins_indicators.keys()),
-    list(ins_indicators.keys())[0],
-)
+with st.sidebar:
+    select_codes = st.multiselect(
+        "Which market do you want to analyze?",
+        list(ins_indicators.keys()),
+        list(ins_indicators.keys())[0],
+    )
 
-stock_codes = [ins_indicators[i] for i in select_codes]
+    stock_codes = [ins_indicators[i] for i in select_codes]
 
 
 
 
-# 여러 주식코드를 입력받기
+    # 여러 주식코드를 입력받기
 
-start_date = st.date_input('Start Date', datetime.date(2020, 1, 1))
-end_date = st.date_input('End Date', datetime.date.today())
+    start_date = st.date_input('Start Date', datetime.date(2020, 1, 1))
+    end_date = st.date_input('End Date', datetime.date.today())
 
 
 def drawdown_df (df) :
