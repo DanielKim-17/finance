@@ -45,6 +45,7 @@ with st.sidebar:
     start_date = st.date_input('Start Date', datetime.date(2020, 1, 1))
     end_date = st.date_input('End Date', datetime.date.today())
     period = st.selectbox('Select Data Period', ['1d', '1wk', '1mo'])
+    Button_AZ = st.button('Get Data')
 
 
 
@@ -73,7 +74,7 @@ def drawdown_df (df) :
 # 데이터 주기를 선택
 
 
-if st.button('Get Data'):
+if Button_AZ:
     stock_df = pd.DataFrame()
     country_codes = {code: stock_indicators[code] for code in select_codes}
     for country, info in country_codes.items():

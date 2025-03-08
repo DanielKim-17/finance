@@ -78,6 +78,7 @@ with st.sidebar:
 
     start_date = st.date_input('Start Date', datetime.date(2020, 1, 1))
     end_date = st.date_input('End Date', datetime.date.today())
+    Button_AZ = st.button('Get Data')
 
 
 def drawdown_df (df) :
@@ -90,7 +91,7 @@ def drawdown_df (df) :
     return drawdown
 
 # 주식 데이터를 가져오기 및 그래프 그리기
-if st.button('Get Data'):
+if Button_AZ:
     stock_df = pd.DataFrame()
     ins_codes = {code: ins_indicators[code] for code in select_codes}
     series_ids = list(ins_codes.values())
