@@ -33,7 +33,7 @@ with st.sidebar:
     # 여러 주식코드를 입력받기
     stock_codes = [stock_code1, stock_code2, stock_code3]
 
-    start_date = st.date_input('Start Date', datetime.date(2024, 1, 1))
+    start_date = st.date_input('Start Date', datetime.date(2021, 1, 1))
     end_date = st.date_input('End Date', datetime.date.today())
     Button_AZ = st.button('Get Data')
 
