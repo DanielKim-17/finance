@@ -3,6 +3,7 @@
 import yfinance as yf
 import pandas as pd
 import streamlit as st
+import plotly.express as px
 import datetime
 
 st.set_page_config(page_title=None, page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)
@@ -96,14 +97,18 @@ with st.sidebar:
     periods = st.selectbox('Select Data Period', ['1mo', '2mo', '3mo'])
     Button_SP = st.button('Get SP500 Data')
     Raisings = st.selectbox('Select Rasing Falling', ['Rasing', 'Falling'])
-    Quantities = st.number_input('Input Quantity', value= 10)
-    start_date = st.date_input('Start Date', datetime.date(2024, 1, 1))
+    Quantities = st.number_input('Input Quantity', value= 5)
+    start_date = st.date_input('Start Date', datetime.date(2025, 1, 1))
     end_date = st.date_input('End Date', datetime.date.today())
     Button_AZ = st.button('Analysis')
 
 # Initialize session state for change data
 if 'change' not in st.session_state:
     st.session_state.change = None
+
+# Initialize session state for final_table
+if 'final_table' not in st.session_state:
+    st.session_state.final_table = None
 
 if Button_SP:
     # Fetch the list of S&P 500 companies from Wikipedia
@@ -136,7 +141,11 @@ def drawdown_df(df):
     drawdown = (wealth_index - previous_peak) / previous_peak
     return drawdown
 
+
+
 if Button_AZ:
+    if 'final_table' not in st.session_state:
+        st.session_state.final_table = None
     if st.session_state.change is not None:
         change = st.session_state.change
         if Raisings == 'Rasing':
@@ -145,7 +154,7 @@ if Button_AZ:
             low_list = change.tail(Quantities)
 
         # Create a DataFrame to store the results
-        company_infos = pd.DataFrame(columns=['Ticker', 'DisplayName', 'Sector','Price', 'target', 'recommend' ,'MarketCap', 'Beta', 'EQGrowth', 'Wk52'])
+        company_infos = pd.DataFrame(columns=['select','Ticker', 'DisplayName', 'Sector','Price', 'target', 'recommend' ,'MarketCap', 'Beta', 'EQGrowth', 'Wk52'])
 
         # Loop through each ticker in low_list
         for ticker in low_list.index:
@@ -167,6 +176,7 @@ if Button_AZ:
 
             # Append the results to the DataFrame
             company_infos = pd.concat([company_infos, pd.DataFrame({
+                'select': [False],
                 'Ticker': [ticker],
                 'DisplayName': [DisplayName],
                 'Sector': [sector],
@@ -224,24 +234,44 @@ if Button_AZ:
         final_table = final_table.rename(columns={'Close': 'Normalized_Price'})
         # final_table['flag'] = False
 
-        # final_table = st.data_editor(final_table)
+        # Store the final_table in session state
+        st.session_state.final_table = final_table
+        st.session_state.combined_df = combined_df
+        st.session_state.drawdown = drawdown
+
+if st.session_state.final_table is not None:
+    final_table = st.session_state.final_table
+    combined_df = st.session_state.combined_df
+    drawdown = st.session_state.drawdown
+    # final_table['select'] = True
+    # company_infos 테이블 출력
+    st.subheader('Minimum Drawdown by Market')
+    def slected_stock():
+        selected_stock = final_table[final_table['select'] == True]['Ticker']
+        selected_stock = selected_stock.values.tolist()
+        return selected_stock
+
+    ed_final_table = st.data_editor(final_table, hide_index=True)
+    selected_stock = ed_final_table[ed_final_table['select'] == True]['Ticker']
+    # selected_stock = selected_stock.values.tolist()
+    # st.write('selected_stock:', selected_stock)
 
 
-        if not combined_df.empty:
-            # company_infos 테이블 출력
-            st.subheader('Minimum Drawdown by Market')
-            # st.data_editor(final_table)
-            st.dataframe(final_table, hide_index = True)
 
-            # 주식 그래프 그리기
-            st.subheader('Stock Prices')
-            st.line_chart(combined_df)
+    if st.button('Update') is True:
+        # 주식 그래프 그리기
+        st.subheader('Stock Prices')
+        fig = px.line(combined_df[selected_stock])
+        fig.update_xaxes(rangeslider_visible=True)
+        st.plotly_chart(fig)    
 
-            # drawdown 그래프 그리기
-            st.subheader('Drawdown')
-            st.line_chart(drawdown)
 
-    else:
-        st.warning('Please click "Get SP500 Data" first to retrieve the data.')
+        # drawdown 그래프 그리기
+        st.subheader('Drawdown')
+        fig = px.line(drawdown[selected_stock])
+        fig.update_xaxes(rangeslider_visible=True)
+        st.plotly_chart(fig)
 
-# streamlit run rising_stock.py
+    
+else:
+    st.warning('Please click "Get SP500 Data" first to retrieve the data.')
